@@ -1,0 +1,2 @@
+@SQ	SN:chr22	LN:50818468
+@PG	ID:bwa	PN:bwa	VN:0.7.12-r1039	CL:./bwa samse chr22.fa chr22.sai chr22.fastq
