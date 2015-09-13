@@ -25,6 +25,7 @@ my $read_length	= $opt_r ? $opt_r : 50;
 my $number_of_reads_to_generate	= $opt_n ? $opt_n : 1000;
 my $nucleotide_output_file = $opt_o ? $opt_o : "out.fq";
 
+# Open connection for writing fastq file
 open my $nucleotide_output_file_fh, '>', $nucleotide_output_file or die "Could not open file '$nucleotide_output_file' $!";
 my $db = Bio::DB::Fasta->new($nucleotide_input_file);
 my @ids = $db->get_all_primary_ids;
@@ -32,12 +33,14 @@ my @ids = $db->get_all_primary_ids;
 my $read_count = 0;
 
 while( $read_count <= $number_of_reads_to_generate ) {
+	# DNA sequence mutated by introducing 0.01% error rate
 	my $chromosome_name = $ids[int( rand(@ids) )];
 	my $chromosome_size = $db->length( $chromosome_name );
 	my $random_start_position = int( rand($chromosome_size - $read_length) );
 	my $end_position = $random_start_position + $read_length;
 	my $seq_read = $db->seq($chromosome_name, $random_start_position => $end_position);
 	
+	# Write output to fastq file
 	print $nucleotide_output_file_fh "\@SEQ_ID:$chromosome_name:$random_start_position:$end_position\n";
 	print $nucleotide_output_file_fh "+\n";
 	print $nucleotide_output_file_fh "$seq_read\n";
