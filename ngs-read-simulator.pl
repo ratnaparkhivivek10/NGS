@@ -30,16 +30,18 @@ open my $nucleotide_output_file_fh, '>', $nucleotide_output_file or die "Could n
 my $db = Bio::DB::Fasta->new($nucleotide_input_file);
 my @ids = $db->get_all_primary_ids;
 
-my $read_count = 0;
+my $read_count = 1;
 
 while( $read_count <= $number_of_reads_to_generate ) {
-	# DNA sequence mutated by introducing 0.01% error rate
+	# Pick a random DNA sequence
 	my $chromosome_name = $ids[int( rand(@ids) )];
 	my $chromosome_size = $db->length( $chromosome_name );
 	my $random_start_position = int( rand($chromosome_size - $read_length) );
-	my $end_position = $random_start_position + $read_length;
-	my $seq_read = $db->seq($chromosome_name, $random_start_position => $end_position);
+	my $end_position = $random_start_position + $read_length-1; #[)
 	
+	# DNA sequence mutated by introducing 0.01% error rate
+	my $seq_read = mutate_sequence($db->seq($chromosome_name, $random_start_position => $end_position));
+
 	# Write output to fastq file
 	print $nucleotide_output_file_fh "\@SEQ_ID:$chromosome_name:$random_start_position:$end_position\n";
 	print $nucleotide_output_file_fh "+\n";
