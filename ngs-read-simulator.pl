@@ -44,8 +44,8 @@ while( $read_count <= $number_of_reads_to_generate ) {
 
 	# Write output to fastq file
 	print $nucleotide_output_file_fh "\@SEQ_ID:$chromosome_name:$random_start_position:$end_position\n";
-	print $nucleotide_output_file_fh "+\n";
 	print $nucleotide_output_file_fh "$seq_read\n";
+	print $nucleotide_output_file_fh "+\n";	
 	print $nucleotide_output_file_fh get_dummy_quality_value_seq($read_length),"\n";
 	
 	$read_count++;
